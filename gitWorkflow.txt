@@ -4,7 +4,7 @@ First things:
     - e.g. git checkout -b 'lars'
 2. We only work in this branch, NEVER main.
 
-Event 1
+Event 1 - when someone else has a branch, and pushed whilst you were working on main.
 While working on my branch, the main changed
 3.1: Store all files on your branch. (ctrl + s)
 3.2: Add changes to your branch: git add my_file1 my_file2
@@ -20,7 +20,7 @@ While working on my branch, the main changed
 
 
 
-Event 2
+Event 2 - Added a file, then pushed to main.
 You have completed your changes and want to push them to main
 4.1: Store all your files on my branch. (ctrl + s)
 4.2: Add changes to your branch: git add my_file1 my_file2
