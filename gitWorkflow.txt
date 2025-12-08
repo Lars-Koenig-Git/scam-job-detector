@@ -1,0 +1,35 @@
+First things:
+
+1. We always create a new branch
+    - e.g. git checkout -b 'lars'
+2. We only work in this branch, NEVER main.
+
+Event 1
+While working on my branch, the main changed
+3.1: Store all files on your branch. (ctrl + s)
+3.2: Add changes to your branch: git add my_file1 my_file2
+3.3: Check status of git: git status
+3.4: Commit the changes to your branch: git commit -m 'A meaningful commit message'
+3.5: Push the changes to your branch: git push origin lars
+3.6: Go back to main: git checkout main
+3.7: Pull the NEW main: git pull origin main
+3.8: Go back to your working branch: git checkout lars
+3.9: Pull the NEW main into your branch: git merge main  (verify first that you are in your branch)
+3.10: If merging conflict come up: Control conflicts and discuss with team (if nessary)
+3.11: Keep working on your branch
+
+
+
+Event 2
+You have completed your changes and want to push them to main
+4.1: Store all your files on my branch. (ctrl + s)
+4.2: Add changes to your branch: git add my_file1 my_file2
+4.3: Commit the changes to your branch: git commit -m 'A meaningful commit message'
+4.4: Push the changes to my branch: git push origin lars
+4.5: Go to github and open pull request.
+4.6: Inform everybody and discuss your changes and whether to keep them.
+4.7: Merge your version into main (on github).
+4.8: Delete your branch on github.
+4.9: Pull origin main to your local machine in terminal: git pull origin master (make sure your are in main not in your branch)
+4.10: Delete your branch in terminal: git sweep
+4.11: Create a new branch and start working on next task.
