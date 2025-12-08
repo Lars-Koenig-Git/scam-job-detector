@@ -24,12 +24,12 @@ Event 2
 You have completed your changes and want to push them to main
 4.1: Store all your files on my branch. (ctrl + s)
 4.2: Add changes to your branch: git add my_file1 my_file2
-we commit
-4.3: Push the changes to my branch: git push origin lars
-4.4: Go to github and open pull request.
-4.5: Inform everybody and discuss your changes and whether to keep them.
-4.6: Merge your version into main (on github).
-4.7: Delete your branch on github.
-4.8: Pull origin main to your local machine in terminal: git pull origin master (make sure your are in main not in your branch)
-4.9: Delete your branch in terminal: git sweep
-4.10: Create a new branch and start working on next task.
+4.3: Commit the changes to your branch: git commit -m 'A meaningful commit message'
+4.4: Push the changes to my branch: git push origin lars
+4.5: Go to github and open pull request.
+4.6: Inform everybody and discuss your changes and whether to keep them.
+4.7: Merge your version into main (on github).
+4.8: Delete your branch on github.
+4.9: Pull origin main to your local machine in terminal: git pull origin master (make sure your are in main not in your branch)
+4.10: Delete your branch in terminal: git sweep
+4.11: Create a new branch and start working on next task.
