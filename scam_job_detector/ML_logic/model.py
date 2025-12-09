@@ -56,3 +56,48 @@ def train_model(
 
     return model, history
 
+
+
+##############################################
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import cross_val_score, cross_validate
+from sklearn.linear_model import LogisticRegression
+
+df = clean_data(df)
+# Extract X and y
+X = df.drop(columns=['fraudulent'])
+y = df['fraudulent']
+# Make train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+# preprocess train and test data
+X_train_preprocessed, X_test_preprocessed = train_preprocessor(X_train, X_test)
+# X_test_preprocessed = test_preprocessor(X_test)
+
+cv = StratifiedKFold(n_splits=5)
+
+pipe = Pipeline([
+    # ("clean_preproc", clean_preproc),
+    ("classifier", LogisticRegression(max_iter=1000))
+])
+
+cross_val_score(pipe, X_train_preprocessed, y_train, cv=cv).mean()
+
+cross_model = cross_validate(pipe, X_train_preprocessed, y_train, cv=cv)
+cross_model
+
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import recall_score, precision_score, accuracy_score
+
+model = LogisticRegression(max_iter=1000)
+
+result = model.fit(X_train_preprocessed, y_train)
+
+result.score
+
+y_pred = result.predict(X_test_preprocessed)
+
+print(recall_score(y_test, y_pred), precision_score(y_test, y_pred), accuracy_score(y_test, y_pred))
+
+
+
