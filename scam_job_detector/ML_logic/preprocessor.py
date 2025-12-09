@@ -1,32 +1,94 @@
 import numpy as np
 import pandas as pd
-
-from colorama import Fore, Style
-
+from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
-from sklearn.compose import ColumnTransformer, make_column_transformer
-from sklearn.preprocessing import OneHotEncoder, FunctionTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.compose import make_column_transformer
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
 
-from taxifare.ml_logic.encoders import transform_time_features, transform_lonlat_features, compute_geohash
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
+from sklearn.feature_extraction.text import TfidfVectorizer
 
+# catagorical columns for One-Hot Encoding
+categorical_columns = [
+    'country',
+    'industry',
+    'function',
+    'employment_type',
+]
+# ordinal columns for Ordinal Encoding
+ordinal_columns = [
+    'required_experience',
+    'required_education'
+]
+#binary columns for binary encoding
+binary_columns = ['has_company_logo', 'has_questions']
 
-def preprocess_features(X: pd.DataFrame) -> np.ndarray:
-    def create_sklearn_preprocessor() -> ColumnTransformer:
-        """
-        Scikit-learn pipeline that transforms a cleaned dataset of shape (_, 7)
-        into a preprocessed one of fixed shape (_, 65).
+#text columns for TF-IDF Vectorizer
+text_columns = [
+        'title',
+        'company_profile',
+        'description',
+        'requirements',
+        'benefits'
+]
 
-        Stateless operation: "fit_transform()" equals "transform()".
-        """
+#reference lists for ordinal encoding
+experience_order = [
+    "Not Applicable",
+    "Unknown",
+    "Internship",
+    "Entry level",
+    "Associate",
+    "Mid-Senior level",
+    "Director",
+    "Executive"
+]
 
-        pass  # YOUR CODE HERE
-        return final_preprocessor
+education_order = [
+    "Unknown",
+    "High School or equivalent",
+    "Vocational",
+    "Certification",
+    "Some College Coursework Completed",
+    "Associate Degree",
+    "Bachelor's Degree",
+    "Professional",
+    "Master's Degree"
+]
 
-    print(Fore.BLUE + "\nPreprocessing features..." + Style.RESET_ALL)
+#preprocessor pipeline
 
-    preprocessor = create_sklearn_preprocessor()
-    X_processed = preprocessor.fit_transform(X)
+def feature_preprocessor(X: pd.DataFrame) -> np.ndarray:
+    def preprocessing_pipeline() -> ColumnTransformer:
 
-    print("✅ X_processed, with shape", X_processed.shape)
+        cat_transformer = make_pipeline(
+            SimpleImputer(strategy='constant', fill_value='missing'),
+            OneHotEncoder(handle_unknown='ignore')
+        )
+        ordinal_transformer = make_pipeline(
+            SimpleImputer(strategy='constant', fill_value='missing'),
+            OrdinalEncoder(
+            categories=[experience_order, education_order],
+            handle_unknown="use_encoded_value",
+            unknown_value=-1)
+        )
+        binary_transformer = make_pipeline(
+            SimpleImputer(strategy='most_frequent', fill_value=0),
+            OneHotEncoder(handle_unknown='ignore')
+        )
+        text_transformer = make_pipeline(
+            TfidfVectorizer(max_features=5000)
+        )
+        preprocessor = make_column_transformer(
+            (cat_transformer, categorical_columns),
+            (ordinal_transformer, ordinal_columns),
+            (binary_transformer, binary_columns),
+            (text_transformer, text_columns)
+        )
+        return preprocessor
 
-    return X_processed
+    preprocessor = preprocessing_pipeline()
+    X_preprocessed = preprocessor.fit_transform(X)
+    return X_preprocessed
