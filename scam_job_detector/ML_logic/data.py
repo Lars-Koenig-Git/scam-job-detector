@@ -3,7 +3,6 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import pandas as pd
-from pathlib import Path
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -38,8 +37,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
         return ' '.join(tokens)
 
-    path = Path('.')
-    df = pd.read_csv('/raw_data/fake_job_postings.csv')
+    df = pd.read_csv('../raw_data/fake_job_postings.csv')
     print('dataset loaded')
 
     # Creating binary columns for missing values:
