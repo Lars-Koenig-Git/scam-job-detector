@@ -98,3 +98,26 @@ result.score
 y_pred = result.predict(X_test_preprocessed)
 
 print(recall_score(y_test, y_pred), precision_score(y_test, y_pred), accuracy_score(y_test, y_pred))
+
+#cross validation grid search
+
+param_grid = {
+    'C': [0.01, 0.1, 1, 10, 100],
+    'penalty': ['l1', 'l2'],
+}
+
+from sklearn.model_selection import GridSearchCV
+
+grid_search = GridSearchCV(
+    result,
+    param_grid,
+    cv=5,
+    scoring="precision",
+    n_jobs=-1
+)
+#Fit the grid search:
+grid_search.fit(X_train_preprocessed, y_train)
+#Inspect best estimator:
+print(f"Best score: {grid_search.best_score_}")
+print(f"Best parameters:, {grid_search.best_params_}")
+print(f"Best estimator:, {grid_search.best_estimator_}")
