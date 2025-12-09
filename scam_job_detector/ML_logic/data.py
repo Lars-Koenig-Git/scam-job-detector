@@ -1,37 +1,9 @@
+import string
+from nltk.corpus import stopwords
+from nltk import word_tokenize
+from nltk.stem import WordNetLemmatizer
 import pandas as pd
-
-# from google.cloud import bigquery
-# from colorama import Fore, Style
-# from pathlib import Path
-
-# from taxifare.params import *
-
-def preprocessing(sentence):
-
-    stop_words = set(stopwords.words('english'))
-
-    # remove punctuation
-    for punctuation in string.punctuation:
-        sentence = sentence.replace(punctuation, '')
-
-    # set to lowercase
-    sentence = sentence.lower()
-
-    # remove numbers
-    for char in string.digits:
-        sentence = ''.join(char for char in sentence if not char.isdigit())
-
-    # tokenize
-    tokens = word_tokenize(sentence)
-
-    # removing stop words
-    tokens = [word for word in tokens if word not in stop_words]
-
-    # lemmatize
-    tokens = [WordNetLemmatizer().lemmatize(word, pos='v') for word in tokens]
-
-    return ' '.join(tokens)
-
+from pathlib import Path
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -40,7 +12,34 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     - Cleaning text data by removing stopwords, digits, lamatizing, etc.
     - 
     """
-    df = read_csv('raw_data/fake_job_postings.csv')
+    def preprocessing(sentence):
+
+        stop_words = set(stopwords.words('english'))
+
+        # remove punctuation
+        for punctuation in string.punctuation:
+            sentence = sentence.replace(punctuation, '')
+
+        # set to lowercase
+        sentence = sentence.lower()
+
+        # remove numbers
+        for char in string.digits:
+            sentence = ''.join(char for char in sentence if not char.isdigit())
+
+        # tokenize
+        tokens = word_tokenize(sentence)
+
+        # removing stop words
+        tokens = [word for word in tokens if word not in stop_words]
+
+        # lemmatize
+        tokens = [WordNetLemmatizer().lemmatize(word, pos='v') for word in tokens]
+
+        return ' '.join(tokens)
+
+    path = Path('.')
+    df = pd.read_csv('/raw_data/fake_job_postings.csv')
     print('dataset loaded')
 
     # Creating binary columns for missing values:
@@ -65,8 +64,6 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # dropping columns
     df.drop(columns=['salary_range', 'department', 'location', 'job_id'], inplace=True)
     
-    # store data
-    df.to_csv('raw_data/data_cleaned.csv', index=False)
 
     print("✅ data cleaned")
 
