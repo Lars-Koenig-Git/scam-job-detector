@@ -98,6 +98,3 @@ result.score
 y_pred = result.predict(X_test_preprocessed)
 
 print(recall_score(y_test, y_pred), precision_score(y_test, y_pred), accuracy_score(y_test, y_pred))
-
-
-
