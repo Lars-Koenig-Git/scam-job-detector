@@ -37,9 +37,9 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
         return ' '.join(tokens)
 
+    # read data
     df = pd.read_csv('../raw_data/fake_job_postings.csv')
-    print('dataset loaded')
-
+    
     # Creating binary columns for missing values:
     df['department_binary'] = df['department'].map(lambda x: 0 if pd.isna(x) else 1)
     
