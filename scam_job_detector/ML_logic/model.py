@@ -96,5 +96,5 @@ def load_model():
     return model
 
 if __name__ == "__main__":
-    initialize_grid_search()
-    #load_model()
+    #initialize_grid_search()
+    load_model()
