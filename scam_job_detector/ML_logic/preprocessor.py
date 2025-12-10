@@ -83,12 +83,14 @@ def preprocessing_pipeline() -> ColumnTransformer:
 
     def combine_text(X):
         return X[text_columns].fillna("").agg(" ".join, axis=1)
-    
+
     text_transformer = make_pipeline(
         FunctionTransformer(combine_text, validate=False),
         TfidfVectorizer(max_features=5000)
     )
     
+
+
     preprocessor = make_column_transformer(
         (cat_transformer, categorical_columns),
         (ordinal_transformer, ordinal_columns),
@@ -121,4 +123,3 @@ def test_preprocessor(X_test: pd.DataFrame) -> np.ndarray:
 
     X_test_preprocessed = preprocessor.transform(X_test)
     return X_test_preprocessed
-

@@ -14,12 +14,13 @@ def initialize_grid_search():
     Storing the best model
     """
     # Read file
-    data_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'raw_data', 'fake_job_postings.csv')
-    print(data_path)
-    df = pd.read_csv(data_path)
-
-    # clean data
-    df = clean_data(df)
+    clean_data_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+    'raw_data',
+    'data_cleaned.csv'
+    )
+    print(clean_data_path)
+    df = pd.read_csv(clean_data_path)
+    print("✅ Clean data loaded")
 
     # Extract X and y
     X = df.drop(columns=['fraudulent'])
@@ -34,7 +35,7 @@ def initialize_grid_search():
     
     # Defining parameters and scoring for grid search
     param_grid = {
-        'penalty': ['l1', 'l2', 'ElasticNet', 'None'],
+        'penalty': ['l1', 'l2'],
         'class_weight': [None, 'balanced'],
         'solver': ['liblinear']
     }
@@ -106,5 +107,5 @@ def load_preprocessor():
     return preprocessor
 
 if __name__ == "__main__":
-    initialize_grid_search()
-    #load_model()
+    #initialize_grid_search()
+    load_model()
