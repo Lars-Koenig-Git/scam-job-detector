@@ -1,7 +1,7 @@
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import recall_score, precision_score, balanced_accuracy_score, f1_score
-from scam_job_detector.ML_logic.data import clean_data
+# from scam_job_detector.ML_logic.data import clean_data
 from scam_job_detector.ML_logic.preprocessor import train_preprocessor, test_preprocessor
 from sklearn.model_selection import GridSearchCV
 import pandas as pd
@@ -107,5 +107,5 @@ def load_preprocessor():
     return preprocessor
 
 if __name__ == "__main__":
-    #initialize_grid_search()
+    # initialize_grid_search()
     load_model()
