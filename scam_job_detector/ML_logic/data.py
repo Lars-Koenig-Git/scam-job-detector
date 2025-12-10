@@ -69,3 +69,27 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     print("✅ data cleaned")
 
     return df
+def save_clean_data():
+    """
+    Clean raw data ONCE and save it to raw_data/data_cleaned.csv
+    """
+    raw_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+        'raw_data',
+        'fake_job_postings.csv'
+    )
+    df_raw = pd.read_csv(raw_path)
+
+    df_clean = clean_data(df_raw)
+
+    save_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+        'raw_data',
+        'data_cleaned.csv'
+    )
+    df_clean.to_csv(save_path, index=False)
+
+    print(f"✅ Cleaned data saved at: {save_path}")
+
+if __name__ == "__main__":
+    save_clean_data()
