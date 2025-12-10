@@ -8,6 +8,7 @@ import pandas as pd
 import pickle
 import time
 import os
+import dill
 
 def initialize_grid_search():
     """
@@ -15,7 +16,8 @@ def initialize_grid_search():
     Storing the best model
     """
     # Read file
-    data_path = '../scam-job-detector/raw_data/fake_job_postings.csv'
+    data_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'raw_data', 'fake_job_postings.csv')
+    print(data_path)
     df = pd.read_csv(data_path)
 
     # clean data
@@ -51,7 +53,7 @@ def initialize_grid_search():
     # Fit the grid search:
     grid_search.fit(X_train_preprocessed, y_train)
 
-    
+
     # Results
     print("✅ Grid search completed")
 
@@ -64,32 +66,35 @@ def initialize_grid_search():
     y_pred = grid_search.predict(X_test_preprocessed)
     print(f'''
           Model Performance
-          'Recall': {recall_score(y_test, y_pred)}, 
+          'Recall': {recall_score(y_test, y_pred)},
           'Precision': {precision_score(y_test, y_pred)},
           'Balanced Accuracy: {balanced_accuracy_score(y_test, y_pred)},
           'F1 Score: {f1_score(y_test, y_pred)}
         ''')
-    
-    timestamp = time.strftime("%Y%m%d-%H%M%S")
-    # model_path = os.path.join('..', "models", f"{timestamp}.h5")
-    # grid_search.save(model_path)
-    best_params = grid_search.best_params_
-    params_path = os.path.join('..', "params", timestamp + ".pickle")
-    
-    with open(params_path, "wb") as file:
-        pickle.dump(best_params, file)
 
-    return grid_search
+    #timestamp = time.strftime("%Y%m%d-%H%M%S")
+    model = grid_search.best_estimator_
+    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'models', 'model.dill')
+    #model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'models', f'model_{timestamp}.dill')
 
+    with open(model_path, "wb") as file:
+        dill.dump(model, file)
+    print(f"✅ Model saved at {model_path}")
+    return None
 
-def run_best_model(model: Model) -> Model:
+# loading model
+
+def load_model():
     """
-    Load the best performing model.
-    Run the model.
-
+    Load the model from the specified path
     """
-    # YOUR CODE HERE
+    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'models', 'model.dill')
 
-    print("✅ Model compiled")
-
+    with open(model_path, "rb") as file:
+        model = dill.load(file)
+    print("✅ Model loaded")
     return model
+
+if __name__ == "__main__":
+    initialize_grid_search()
+    #load_model()
