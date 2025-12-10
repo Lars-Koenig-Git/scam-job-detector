@@ -88,6 +88,7 @@ def preprocessing_pipeline() -> ColumnTransformer:
         FunctionTransformer(combine_text, validate=False),
         TfidfVectorizer(max_features=5000)
     )
+    
 
 
     preprocessor = make_column_transformer(
@@ -99,8 +100,26 @@ def preprocessing_pipeline() -> ColumnTransformer:
     return preprocessor
 
 # train preprocessor pipeline
-def train_preprocessor(X_train: pd.DataFrame, X_test: pd.DataFrame) -> np.ndarray:
+def train_preprocessor(X_train: pd.DataFrame) -> np.ndarray:
     preprocessor = preprocessing_pipeline()
-    X_train_preprocessed = preprocessor.fit_transform(X_train)
+    X_train_fitted = preprocessor.fit(X_train)
+    X_train_preprocessed = X_train_fitted.transform(X_train)
+
+    preprocessor_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'models', 'preprocessor.dill')
+    with open(preprocessor_path, "wb") as file:
+        dill.dump(X_train_fitted, file)
+
+    print(f"Preprocessor saved at {preprocessor_path}")
+
+    return X_train_preprocessed
+
+
+# function to load and run the fitted preprocessor on new or test data
+def test_preprocessor(X_test: pd.DataFrame) -> np.ndarray:
+    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'models', 'preprocessor.dill')
+
+    with open(model_path, "rb") as file:
+        preprocessor = dill.load(file)
+
     X_test_preprocessed = preprocessor.transform(X_test)
-    return X_train_preprocessed, X_test_preprocessed
+    return X_test_preprocessed
