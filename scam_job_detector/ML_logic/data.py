@@ -3,13 +3,14 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import pandas as pd
+import os
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     Clean raw data by
     - Creating new features for columns with missing values above >30% as binary features: missing = 0, not missing = 1
     - Cleaning text data by removing stopwords, digits, lamatizing, etc.
-    - 
+    -
     """
     def preprocessing(sentence):
 
@@ -38,13 +39,15 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         return ' '.join(tokens)
 
     # read data
-    df = pd.read_csv('../raw_data/fake_job_postings.csv')
-    
+    data_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'raw_data', 'fake_job_postings.csv')
+    print(data_path)
+    df = pd.read_csv(data_path)
+
     # Creating binary columns for missing values:
     df['department_binary'] = df['department'].map(lambda x: 0 if pd.isna(x) else 1)
-    
+
     df['salary_range_binary'] = df['salary_range'].map(lambda x: 0 if pd.isna(x) else 1)
-    
+
     # Clean text data
     cols = ['title', 'company_profile', 'description', 'requirements', 'benefits']
 
@@ -55,13 +58,13 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     for col in cols:
         df[col] = df[col].apply(preprocessing)
-    
+
     # extracting country ID
     df['country'] = df['location'].astype(str).apply(lambda x: x.split(',')[0])
 
     # dropping columns
     df.drop(columns=['salary_range', 'department', 'location', 'job_id'], inplace=True)
-    
+
 
     print("✅ data cleaned")
 
