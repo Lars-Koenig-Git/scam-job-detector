@@ -69,6 +69,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     print("✅ data cleaned")
 
     return df
+
 def save_clean_data():
     """
     Clean raw data ONCE and save it to raw_data/data_cleaned.csv

@@ -8,7 +8,8 @@ import os
 from scam_job_detector.ML_logic.data import clean_data
 from scam_job_detector.ML_logic.preprocessor import test_preprocessor
 from scam_job_detector.ML_logic.model import load_model
-
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
 
 
 app = FastAPI()
@@ -44,8 +45,7 @@ def predict(
     ):
     """
     Make a single course prediction.
-    Assumes `pickup_datetime` is provided as a string by the user in "%Y-%m-%d %H:%M:%S" format
-    Assumes `pickup_datetime` implicitly refers to the "US/Eastern" timezone (as any user in New York City would naturally write)
+    
     """
     # # Parse datetime string
     # eastern = pytz.timezone("US/Eastern")
@@ -75,7 +75,7 @@ def predict(
         'description': description,
         'requirements': requirements,
         'benefits': benefits
-    })
+    }, index=[0])
 
     # Loads preprocessed features into X_processed variable
     X_new_cleaned = clean_data(X_new)
