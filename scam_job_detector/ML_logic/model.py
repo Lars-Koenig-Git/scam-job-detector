@@ -122,14 +122,12 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
         print("\n🔍 Running XGBoost Grid Search...")
 
         param_grid_xgb = {
-            'n_estimators': [100, 200],
-            'max_depth': [3, 5],
-            'learning_rate': [0.01, 0.1],
-            'subsample': [0.8, 1.0],
-            'colsample_bytree': [0.8, 1.0],
-            'scale_pos_weight': [1, 5, 10]
-        }
 
+            'n_estimators': [250, 300],
+            'max_depth': [10, 12],
+            'learning_rate': [0.1],
+
+        }
         xgb = XGBClassifier(
             objective="binary:logistic",
             eval_metric="logloss",
@@ -157,9 +155,9 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
         print("✅ Grid search for XGboost completed")
 
         # Inspect best estimator:
-        print(f"Best score: {best_xgb.best_score_}")
-        print(f"Best parameters:, {best_xgb.best_params_}")
-        print(f"Best estimator:, {best_xgb.best_estimator_}")
+        print(f"Best score: {grid_xgb.best_score_}")
+        print(f"Best parameters:, {grid_xgb.best_params_}")
+        print(f"Best estimator:, {grid_xgb.best_estimator_}")
 
         # model performance on test set
         y_pred = best_xgb.predict(X_test_pp)
@@ -268,7 +266,7 @@ if __name__ == "__main__":
 #     # preprocess train and test data
 #     X_train_preprocessed = train_preprocessor(X_train)
 #     X_test_preprocessed = test_preprocessor(X_test)
-    
+
 #     # Defining parameters and scoring for grid search
 #     param_grid = {
 #         'penalty': ['l1', 'l2'],
