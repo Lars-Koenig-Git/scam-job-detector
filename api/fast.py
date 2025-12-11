@@ -26,22 +26,22 @@ app.add_middleware(
 # http://127.0.0.1:8000/predict?pickup_datetime=2014-07-06+19:18:00&pickup_longitude=-73.950655&pickup_latitude=40.783282&dropoff_longitude=-73.984365&dropoff_latitude=40.769802&passenger_count=2
 @app.get("/predict")
 def predict(
-        job_id: str,
-        location: str,
-        industry: str,
-        function_str: str,
-        employment_type: str,
-        required_experience: str,
-        required_education: str,
-        has_company_logo: str,
-        has_questions: str,
-        department: str,
-        salary_range: str,
-        title: str,
-        company_profile: str,
-        description: str,
-        requirements: str,
-        benefits: str,  # Predicted JD
+        job_id: str = None,
+        location: str = None,
+        industry: str = None,
+        function_str: str = None,
+        employment_type: str = None,
+        required_experience: str = None,
+        required_education: str = None,
+        has_company_logo: str = None,
+        has_questions: str = None,
+        department: str = None,
+        salary_range: str = None,
+        title: str = None,
+        company_profile: str = None,
+        description: str = None,
+        requirements: str = None,
+        benefits: str = None,  # Predicted JD
     ):
     """
     Make a single course prediction.
