@@ -48,6 +48,14 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     df['salary_range_binary'] = df['salary_range'].map(lambda x: 0 if pd.isna(x) else 1)
 
+    #Drop irrelevant columns
+    df.drop(columns=['department_binary',
+                     'has_questions',
+                     'required_experience',
+                     'salary_range_binary ',
+                     'telecommuting',
+                     'required_education'], inplace=True)
+
     # Clean text data
     cols = ['title', 'company_profile', 'description', 'requirements', 'benefits']
 
