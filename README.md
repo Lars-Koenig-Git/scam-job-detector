@@ -1,5 +1,5 @@
 # 🕵️‍♀️ Fake Job Scam Detector
-Identify fraudulent job postings using ML and NLP.
+Identify fraudulent job postings using ML, NLP and deep learning.
 
 ---
 
@@ -18,6 +18,7 @@ The goal is to assist job seekers by flagging potentially fraudulent jobs before
 ---
 
 # 📂 Repository Structure
+```bash
 scam-job-detector/
 │
 ├── api/
@@ -64,7 +65,7 @@ scam-job-detector/
 ├── setup.py                    # Packaging config
 ├── README.md                   # Project documentation
 └── tests/                      # Unit tests
-
+```
 
 ---
 
