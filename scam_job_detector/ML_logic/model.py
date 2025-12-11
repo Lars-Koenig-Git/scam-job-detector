@@ -8,7 +8,7 @@ from sklearn.metrics import (
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
-
+from scam_job_detector.ML_logic.preprocessor import train_preprocessor, test_preprocessor
 
 def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
     """
@@ -204,6 +204,34 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
     print(f"💾 Saved at {winner_path}")
 
     return None
+
+def load_model():
+    """
+    Load the model from the specified path
+    """
+    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'models', 'model_winner.dill')
+
+    with open(model_path, "rb") as file:
+        model = dill.load(file)
+    print("✅ Model loaded")
+    return model
+
+def load_preprocessor():
+    """
+    Load the preprocessor fitted with training data
+    """
+    model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'models', 'preprocessor.dill')
+
+    with open(model_path, "rb") as file:
+        preprocessor = dill.load(file)
+    print("✅ Preprocessor loaded")
+    return preprocessor
+
+if __name__ == "__main__":
+    initialize_all_grid_searches()
+    # load_model()
+
+
 
 
 # from sklearn.model_selection import train_test_split
