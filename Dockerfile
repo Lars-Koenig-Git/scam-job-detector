@@ -20,6 +20,7 @@ COPY setup.py setup.py
 # -----------------------------
 # 4. Install dependencies
 # -----------------------------
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 RUN [ "python3", "-c", "import nltk; nltk.download('stopwords')" ]
 RUN [ "python3", "-c", "import nltk; nltk.download('punkt_tab')" ]

@@ -39,17 +39,11 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         return ' '.join(tokens)
 
     # Creating binary columns for missing values:
-    df['department_binary'] = df['department'].map(lambda x: 0 if pd.isna(x) else 1)
+    # df['department_binary'] = df['department'].map(lambda x: 0 if pd.isna(x) else 1)
 
-    df['salary_range_binary'] = df['salary_range'].map(lambda x: 0 if pd.isna(x) else 1)
+    # df['salary_range_binary'] = df['salary_range'].map(lambda x: 0 if pd.isna(x) else 1)
 
-    #Drop irrelevant columns
-    df.drop(columns=['department_binary',
-                     'has_questions',
-                     'required_experience',
-                     'salary_range_binary ',
-                     'telecommuting',
-                     'required_education'], inplace=True)
+
 
     # Clean text data
     cols = ['title', 'company_profile', 'description', 'requirements', 'benefits']
@@ -65,9 +59,19 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # extracting country ID
     df['country'] = df['location'].astype(str).apply(lambda x: x.split(',')[0])
 
-    # dropping columns
-    df.drop(columns=['salary_range', 'department', 'location', 'job_id'], inplace=True)
 
+    # Drop irrelevant columns
+    df.drop(columns=['department',
+                     'has_questions',
+                     'required_experience',
+                     'salary_range',
+                     'telecommuting',
+                     'required_education',
+                     'location', 
+                     'job_id'], inplace=True, errors='ignore')
+    # df.drop(columns=['salary_range',
+    #                  'department', 
+    #                   ], inplace=True)
 
     print("✅ data cleaned")
 
