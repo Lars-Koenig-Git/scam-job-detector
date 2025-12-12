@@ -22,12 +22,12 @@ categorical_columns = [
     'employment_type'
 ]
 # ordinal columns for Ordinal Encoding
-ordinal_columns = [
-    'required_experience',
-    'required_education'
-]
+# ordinal_columns = [
+#     'required_experience',
+#     'required_education'
+# ]
 #binary columns for binary encoding
-binary_columns = ['has_company_logo', 'has_questions', 'department_binary', 'salary_range_binary']
+binary_columns = ['has_company_logo']#, 'has_questions', 'department_binary', 'salary_range_binary']
 
 #text columns for TF-IDF Vectorizer
 text_columns = [
@@ -39,44 +39,44 @@ text_columns = [
 ]
 
 #reference lists for ordinal encoding
-experience_order = [
-    "Not Applicable",
-    "Unknown",
-    "Internship",
-    "Entry level",
-    "Associate",
-    "Mid-Senior level",
-    "Director",
-    "Executive"
-]
+# experience_order = [
+#     "Not Applicable",
+#     "Unknown",
+#     "Internship",
+#     "Entry level",
+#     "Associate",
+#     "Mid-Senior level",
+#     "Director",
+#     "Executive"
+# ]
 
-education_order = [
-    "Unknown",
-    "High School or equivalent",
-    "Vocational",
-    "Certification",
-    "Some College Coursework Completed",
-    "Associate Degree",
-    "Bachelor's Degree",
-    "Professional",
-    "Master's Degree"
-]
+# education_order = [
+#     "Unknown",
+#     "High School or equivalent",
+#     "Vocational",
+#     "Certification",
+#     "Some College Coursework Completed",
+#     "Associate Degree",
+#     "Bachelor's Degree",
+#     "Professional",
+#     "Master's Degree"
+# ]
 
 
 # preprocessor pipeline
-def preprocessing_pipeline() -> ColumnTransformer:
+def preprocessing_pipeline(text=True) -> ColumnTransformer:
 
     cat_transformer = make_pipeline(
         SimpleImputer(strategy='constant', fill_value='missing'),
         OneHotEncoder(handle_unknown='ignore')
     )
-    ordinal_transformer = make_pipeline(
-        SimpleImputer(strategy='constant', fill_value='missing'),
-        OrdinalEncoder(
-        categories=[experience_order, education_order],
-        handle_unknown="use_encoded_value",
-        unknown_value=-1)
-    )
+    # ordinal_transformer = make_pipeline(
+    #     SimpleImputer(strategy='constant', fill_value='missing'),
+    #     OrdinalEncoder(
+    #     categories=[experience_order, education_order],
+    #     handle_unknown="use_encoded_value",
+    #     unknown_value=-1)
+    #)
     binary_transformer = make_pipeline(
         SimpleImputer(strategy='most_frequent', fill_value=0),
         OneHotEncoder(handle_unknown='ignore')
@@ -84,23 +84,30 @@ def preprocessing_pipeline() -> ColumnTransformer:
 
     def combine_text(X):
         return X[text_columns].fillna("").agg(" ".join, axis=1)
-    
+
     text_transformer = make_pipeline(
         FunctionTransformer(combine_text, validate=False),
         TfidfVectorizer(max_features=5000)
     )
-    
-    preprocessor = make_column_transformer(
-        (cat_transformer, categorical_columns),
-        (ordinal_transformer, ordinal_columns),
-        (binary_transformer, binary_columns),
-        (text_transformer, text_columns)
-    )
+    if text:
+        preprocessor = make_column_transformer(
+            (cat_transformer, categorical_columns),
+            #(ordinal_transformer, ordinal_columns),
+            (binary_transformer, binary_columns),
+            (text_transformer, text_columns)
+        )
+    else:
+        preprocessor = make_column_transformer(
+            (cat_transformer, categorical_columns),
+            #(ordinal_transformer, ordinal_columns),
+            (binary_transformer, binary_columns),
+            remainder='drop'
+        )
     return preprocessor
 
 # train preprocessor pipeline
-def train_preprocessor(X_train: pd.DataFrame) -> np.ndarray:
-    preprocessor = preprocessing_pipeline()
+def train_preprocessor(X_train: pd.DataFrame, text=True) -> np.ndarray:
+    preprocessor = preprocessing_pipeline(text=text)
     X_train_fitted = preprocessor.fit(X_train)
     X_train_preprocessed = X_train_fitted.transform(X_train)
 
@@ -110,7 +117,7 @@ def train_preprocessor(X_train: pd.DataFrame) -> np.ndarray:
 
     print(f"Preprocessor saved at {preprocessor_path}")
 
-    return X_train_preprocessed
+    return X_train_preprocessed, preprocessor
 
 
 # function to load and run the fitted preprocessor on new or test data
