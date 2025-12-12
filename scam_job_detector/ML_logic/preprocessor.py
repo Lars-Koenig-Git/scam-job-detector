@@ -35,7 +35,7 @@ text_columns = [
 ]
 
 # preprocessor pipeline
-def preprocessing_pipeline(text=True) -> ColumnTransformer:
+def preprocessing_pipeline(text=True, text_only=False) -> ColumnTransformer:
 
     cat_transformer = make_pipeline(
         SimpleImputer(strategy='constant', fill_value='missing'),
@@ -54,7 +54,11 @@ def preprocessing_pipeline(text=True) -> ColumnTransformer:
         FunctionTransformer(combine_text, validate=False),
         TfidfVectorizer(max_features=5000)
     )
-    if text:
+    if text_only:
+        preprocessor = make_column_transformer(
+            (text_transformer, text_columns)
+        )
+    elif text:
         preprocessor = make_column_transformer(
             (cat_transformer, categorical_columns),
             (binary_transformer, binary_columns),
@@ -69,8 +73,8 @@ def preprocessing_pipeline(text=True) -> ColumnTransformer:
     return preprocessor
 
 # train preprocessor pipeline
-def train_preprocessor(X_train: pd.DataFrame, text=True) -> np.ndarray:
-    preprocessor = preprocessing_pipeline(text=text)
+def train_preprocessor(X_train: pd.DataFrame, text=True, text_only = False) -> np.ndarray:
+    preprocessor = preprocessing_pipeline(text=text, text_only=text_only)
     X_train_fitted = preprocessor.fit(X_train)
     X_train_preprocessed = X_train_fitted.transform(X_train)
 

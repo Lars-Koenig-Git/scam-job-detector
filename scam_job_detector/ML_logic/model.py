@@ -115,8 +115,8 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
 
         param_grid_xgb = {
 
-            'n_estimators': [275, 300, 325],
-            'max_depth': [11, 13],
+            'n_estimators': [260, 275, 290],
+            'max_depth': [11, 12, 13],
             'learning_rate': [0.1],
 
         }
@@ -173,7 +173,8 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
     # Evaluate XGB if available
     if best_xgb is not None:
         y_pred_xgb = best_xgb.predict(X_test_pp)
-        ap_xgb = average_precision_score(y_test, y_pred_xgb)
+        y_pred_xgb_proba = best_xgb.predict_proba(X_test_pp)[:, 1]
+        ap_xgb = average_precision_score(y_test, y_pred_xgb_proba)
         model_scores["xgb"] = (ap_xgb, best_xgb)
         print(f"🔎 XGBoost AP on test: {ap_xgb:.4f}")
 
@@ -220,4 +221,3 @@ def load_preprocessor():
 if __name__ == "__main__":
     initialize_all_grid_searches(run_logreg=True, run_xgb=True)
     # load_model()
-
