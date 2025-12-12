@@ -14,15 +14,16 @@ WORKDIR /app
 COPY scam_job_detector scam_job_detector
 COPY api api
 COPY models models
-COPY requirements.txt requirements.txt
+COPY requirements_test.txt requirements.txt
 COPY setup.py setup.py
 
 # -----------------------------
 # 4. Install dependencies
 # -----------------------------
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install .
-
+RUN [ "python3", "-c", "import nltk; nltk.download('stopwords')" ]
+RUN [ "python3", "-c", "import nltk; nltk.download('punkt_tab')" ]
+RUN [ "python3", "-c", "import nltk; nltk.download('wordnet')" ]
 # -----------------------------
 # 5. Launch API using uvicorn
 # - host 0.0.0.0 allows receiving external requests
