@@ -38,11 +38,6 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
         return ' '.join(tokens)
 
-    # read data
-    data_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'raw_data', 'fake_job_postings.csv')
-    print(data_path)
-    df = pd.read_csv(data_path)
-
     # Creating binary columns for missing values:
     df['department_binary'] = df['department'].map(lambda x: 0 if pd.isna(x) else 1)
 
