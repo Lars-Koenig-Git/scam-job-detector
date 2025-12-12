@@ -40,7 +40,7 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
     # -----------------------------
     # Preprocess once
     # -----------------------------
-    X_train_pp = train_preprocessor(X_train)
+    X_train_pp, preprocessor = train_preprocessor(X_train)
     X_test_pp = test_preprocessor(X_test)
 
     # -----------------------------
@@ -123,8 +123,8 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
 
         param_grid_xgb = {
 
-            'n_estimators': [250, 300],
-            'max_depth': [10, 12],
+            'n_estimators': [275, 300, 325],
+            'max_depth': [11, 13],
             'learning_rate': [0.1],
 
         }
@@ -226,7 +226,7 @@ def load_preprocessor():
     return preprocessor
 
 if __name__ == "__main__":
-    initialize_all_grid_searches()
+    initialize_all_grid_searches(run_logreg=True, run_xgb=True)
     # load_model()
 
 
