@@ -21,15 +21,11 @@ categorical_columns = [
     'function',
     'employment_type'
 ]
-# ordinal columns for Ordinal Encoding
-# ordinal_columns = [
-#     'required_experience',
-#     'required_education'
-# ]
-#binary columns for binary encoding
-binary_columns = ['has_company_logo']#, 'has_questions', 'department_binary', 'salary_range_binary']
 
-#text columns for TF-IDF Vectorizer
+# binary columns for binary encoding
+binary_columns = ['has_company_logo']
+
+# text columns for TF-IDF Vectorizer
 text_columns = [
         'title',
         'company_profile',
@@ -38,31 +34,6 @@ text_columns = [
         'benefits'
 ]
 
-#reference lists for ordinal encoding
-# experience_order = [
-#     "Not Applicable",
-#     "Unknown",
-#     "Internship",
-#     "Entry level",
-#     "Associate",
-#     "Mid-Senior level",
-#     "Director",
-#     "Executive"
-# ]
-
-# education_order = [
-#     "Unknown",
-#     "High School or equivalent",
-#     "Vocational",
-#     "Certification",
-#     "Some College Coursework Completed",
-#     "Associate Degree",
-#     "Bachelor's Degree",
-#     "Professional",
-#     "Master's Degree"
-# ]
-
-
 # preprocessor pipeline
 def preprocessing_pipeline(text=True) -> ColumnTransformer:
 
@@ -70,13 +41,7 @@ def preprocessing_pipeline(text=True) -> ColumnTransformer:
         SimpleImputer(strategy='constant', fill_value='missing'),
         OneHotEncoder(handle_unknown='ignore')
     )
-    # ordinal_transformer = make_pipeline(
-    #     SimpleImputer(strategy='constant', fill_value='missing'),
-    #     OrdinalEncoder(
-    #     categories=[experience_order, education_order],
-    #     handle_unknown="use_encoded_value",
-    #     unknown_value=-1)
-    #)
+
     binary_transformer = make_pipeline(
         SimpleImputer(strategy='most_frequent', fill_value=0),
         OneHotEncoder(handle_unknown='ignore')
@@ -92,14 +57,12 @@ def preprocessing_pipeline(text=True) -> ColumnTransformer:
     if text:
         preprocessor = make_column_transformer(
             (cat_transformer, categorical_columns),
-            #(ordinal_transformer, ordinal_columns),
             (binary_transformer, binary_columns),
             (text_transformer, text_columns)
         )
     else:
         preprocessor = make_column_transformer(
             (cat_transformer, categorical_columns),
-            #(ordinal_transformer, ordinal_columns),
             (binary_transformer, binary_columns),
             remainder='drop'
         )
@@ -131,5 +94,5 @@ def test_preprocessor(X_test: pd.DataFrame) -> np.ndarray:
     return X_test_preprocessed
 
 if __name__ == "__main__":
-    #initialize_grid_search()
+    # initialize_grid_search()
     train_preprocessor()

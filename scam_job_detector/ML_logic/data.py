@@ -38,13 +38,6 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
         return ' '.join(tokens)
 
-    # Creating binary columns for missing values:
-    # df['department_binary'] = df['department'].map(lambda x: 0 if pd.isna(x) else 1)
-
-    # df['salary_range_binary'] = df['salary_range'].map(lambda x: 0 if pd.isna(x) else 1)
-
-
-
     # Clean text data
     cols = ['title', 'company_profile', 'description', 'requirements', 'benefits']
 
@@ -69,9 +62,6 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
                      'required_education',
                      'location', 
                      'job_id'], inplace=True, errors='ignore')
-    # df.drop(columns=['salary_range',
-    #                  'department', 
-    #                   ], inplace=True)
 
     print("✅ data cleaned")
 
