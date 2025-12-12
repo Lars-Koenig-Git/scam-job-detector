@@ -52,9 +52,6 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # extracting country ID
     df['country'] = df['location'].astype(str).apply(lambda x: x.split(',')[0])
 
-    # see the columns
-    print(df.columns.tolist())
-
     # Drop irrelevant columns
     df.drop(columns=['department',
                      'has_questions',
