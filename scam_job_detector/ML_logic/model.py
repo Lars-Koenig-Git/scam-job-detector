@@ -34,7 +34,7 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
     )
 
     # Preprocess once
-    X_train_pp = train_preprocessor(X_train)
+    X_train_pp, preprocessor = train_preprocessor(X_train)
     X_test_pp = test_preprocessor(X_test)
 
     # Paths for saving models
