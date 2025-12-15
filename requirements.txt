@@ -4,7 +4,8 @@ scikit-learn
 uvicorn
 fastapi
 xgboost
+shap
 # tensorflow
-# transformers 
+# transformers
 # tf_keras
 # torch
