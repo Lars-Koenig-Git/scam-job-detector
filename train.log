@@ -1,0 +1,11 @@
+nohup: ignoring input
+✅ Clean data loaded
+Preprocessor saved at /home/syeda/code/syeda-tabassum-rahaman/scam-job-detector/models/preprocessor.dill
+
+        Model Performance
+        Recall: 0.7398843930635838,
+        Precision: 0.9922480620155039,
+        Balanced Accuracy: 0.8697952673516567,
+        F1 Score: 0.847682119205298
+        
+✅ Model loaded
