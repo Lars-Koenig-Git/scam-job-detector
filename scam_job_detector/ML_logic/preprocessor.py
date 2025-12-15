@@ -42,7 +42,7 @@ def preprocessing_pipeline(text=True, text_only=False) -> ColumnTransformer:
     )
 
     text_transformer = make_column_transformer(
-    (TfidfVectorizer(max_features=5000), "job_description"),
+    (TfidfVectorizer(max_df=0.9,min_df=2,ngram_range=(1,2), sublinear_tf= False, max_features=None), "job_description"),
     remainder="drop"
     )
 

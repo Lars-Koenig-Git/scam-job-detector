@@ -34,7 +34,7 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
     )
 
     # Preprocess once
-    X_train_pp, preprocessor = train_preprocessor(X_train)
+    X_train_pp = train_preprocessor(X_train)
     X_test_pp = test_preprocessor(X_test)
 
     # Paths for saving models
@@ -65,7 +65,7 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
             param_grid_logreg,
             cv=5,
             scoring='average_precision',
-            n_jobs=2
+            n_jobs=-1
         )
         grid_lr.fit(X_train_pp, y_train)
 
@@ -115,15 +115,15 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
 
         param_grid_xgb = {
 
-            'n_estimators': [260, 275, 290],
-            'max_depth': [11, 12, 13],
+            'n_estimators': [275], #[260, 275, 290]
+            'max_depth': [11], # [11, 12, 13]
             'learning_rate': [0.1],
 
         }
         xgb = XGBClassifier(
             objective="binary:logistic",
             eval_metric="logloss",
-            n_jobs=2,
+            n_jobs=-1,
             random_state=42
         )
 
@@ -132,7 +132,7 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
             param_grid_xgb,
             cv=5,
             scoring='average_precision',
-            n_jobs=2,
+            n_jobs=-1,
             verbose=1
         )
         grid_xgb.fit(X_train_pp, y_train)
@@ -219,5 +219,5 @@ def load_preprocessor():
     return preprocessor
 
 if __name__ == "__main__":
-    # initialize_all_grid_searches(run_logreg=True, run_xgb=True)
-    load_model()
+    initialize_all_grid_searches(run_logreg=True, run_xgb=True)
+    # load_model()
