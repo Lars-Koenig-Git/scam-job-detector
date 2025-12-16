@@ -51,16 +51,36 @@ def shapley(X_new_preprocessed):
     ).head(20)
     top_features[["feature", "shap_value", "abs_value"]]
 
-    shap_features = shap_df["feature"].tolist()
-    shap_values_list =shap_df["shap_value"].tolist()
+    #apply mask to separate text, binary and country features
+    text_mask = shap_df.feature.str.contains("tfidfvectorizer__")
+    binary_mask = shap_df.feature.str.contains("has_company_logo")
+    country_mask = shap_df.feature.str.contains("country_")
 
-    return shap_features, shap_values_list
+    text_df = shap_df[text_mask]
+    text_df = text_df[text_df.abs_value>0]
+    binary_df = shap_df[binary_mask]
+    country_df = shap_df[country_mask]
 
-def generate_wordcloud(shap_features, shap_values_list):
-    # Create a dictionary of feature names and their corresponding SHAP values
-    shap_dict = dict(zip(shap_features, shap_values_list))
+    # extract text from features names
+    def extract_word(feature):
+        return feature.split("tfidfvectorizer__")[-1]
 
-    # Generate word cloud
-    wc = WordCloud(width=800, height=400, background_color="white").generate_from_frequencies(shap_dict)
+    # Apply function to text_df
+    text_df["word"] = text_df["feature"].apply(extract_word)
 
-    return wc
+    shap_features_text = text_df["word"].tolist()
+    shap_values_list =text_df["shap_value"].tolist()
+    shap_features_binary = binary_df["feature"].tolist()
+    shap_values_binary= binary_df["shap_value"].tolist()
+    shap_features_country = country_df["feature"].tolist()
+    shap_values_country= country_df["shap_value"].tolist()
+    return shap_features_text, shap_values_list, shap_features_binary ,shap_values_binary, shap_features_country, shap_values_country
+
+# def generate_wordcloud(shap_features, shap_values_list):
+#     # Create a dictionary of feature names and their corresponding SHAP values
+#     shap_dict = dict(zip(shap_features, shap_values_list))
+
+#     # Generate word cloud
+#     wc = WordCloud(width=800, height=400, background_color="white").generate_from_frequencies(shap_dict)
+
+#     return wc
