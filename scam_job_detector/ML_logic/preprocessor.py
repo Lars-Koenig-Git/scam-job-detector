@@ -76,7 +76,7 @@ def train_preprocessor(X_train: pd.DataFrame, text=True, text_only = False) -> n
 
     print(f"Preprocessor saved at {preprocessor_path}")
 
-    return X_train_preprocessed, preprocessor
+    return X_train_preprocessed
 
 
 # function to load and run the fitted preprocessor on new or test data
@@ -90,5 +90,4 @@ def test_preprocessor(X_test: pd.DataFrame) -> np.ndarray:
     return X_test_preprocessed
 
 if __name__ == "__main__":
-    # initialize_grid_search()
     train_preprocessor()

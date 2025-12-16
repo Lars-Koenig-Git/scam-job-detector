@@ -3,7 +3,7 @@ import dill
 import pandas as pd
 from sklearn.metrics import (
     recall_score, precision_score, balanced_accuracy_score, f1_score,
-    average_precision_score
+    average_precision_score, roc_auc_score
 )
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.linear_model import LogisticRegression
@@ -30,11 +30,11 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
     y = df["fraudulent"]
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
+        X, y, test_size=0.2, stratify=y
     )
 
     # Preprocess once
-    X_train_pp, preprocessor = train_preprocessor(X_train)
+    X_train_pp = train_preprocessor(X_train)
     X_test_pp = test_preprocessor(X_test)
 
     # Paths for saving models
@@ -55,9 +55,11 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
         print("\n🔍 Running Logistic Regression Grid Search...")
 
         param_grid_logreg = {
-            'penalty': ['l1', 'l2'],
-            'class_weight': [None, 'balanced'],
-            'solver': ['liblinear']
+            "penalty": ["l2"],
+            "C": [0.03, 0.1, 0.3, 1, 3, 10],
+            "class_weight": [None, "balanced"],
+            "solver": ["lbfgs"],
+            "max_iter": [2000],
         }
 
         grid_lr = GridSearchCV(
@@ -65,7 +67,7 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
             param_grid_logreg,
             cv=5,
             scoring='average_precision',
-            n_jobs=2
+            n_jobs=-1
         )
         grid_lr.fit(X_train_pp, y_train)
 
@@ -114,17 +116,18 @@ def initialize_all_grid_searches(run_logreg=True, run_xgb=True):
         print("\n🔍 Running XGBoost Grid Search...")
 
         param_grid_xgb = {
-
-            'n_estimators': [275], #[260, 275, 290]
-            'max_depth': [11], # [11, 12, 13]
-            'learning_rate': [0.1],
-
+            "n_estimators": [300, 600],
+            "learning_rate": [0.1],
+            "max_depth": [10],
+            "min_child_weight": [1, 5],
+            "subsample": [0.8, 1.0],
+            "colsample_bytree": [0.6, 0.8],
+            "reg_lambda": [1, 10],
         }
         xgb = XGBClassifier(
             objective="binary:logistic",
             eval_metric="logloss",
-            n_jobs=2,
-            random_state=42
+            n_jobs=-1
         )
 
         grid_xgb = GridSearchCV(
@@ -208,11 +211,11 @@ def final_model():
     y = df["fraudulent"]
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
+        X, y, test_size=0.2, stratify=y
     )
 
     # Preprocess once
-    X_train_pp, preprocessor = train_preprocessor(X_train)
+    X_train_pp = train_preprocessor(X_train)
     X_test_pp = test_preprocessor(X_test)
 
     # Paths for saving models
@@ -226,8 +229,9 @@ def final_model():
         objective="binary:logistic",
         eval_metric="logloss",
         n_jobs=-1,
-        random_state=42,
         learning_rate=0.1,
+        min_child_weight=1,
+        reg_lambda=1,
         max_depth=11,
         n_estimators=275
     )
@@ -237,13 +241,15 @@ def final_model():
         dill.dump(xgb, f)
 
     y_pred = xgb.predict(X_test_pp)
-
+    y_pred_xgb_proba =xgb.predict_proba(X_test_pp)[:, 1]
     print(f'''
         Model Performance
         Recall: {recall_score(y_test, y_pred)},
         Precision: {precision_score(y_test, y_pred)},
         Balanced Accuracy: {balanced_accuracy_score(y_test, y_pred)},
-        F1 Score: {f1_score(y_test, y_pred)}
+        F1 Score: {f1_score(y_test, y_pred)},
+        AUC: {roc_auc_score(y_test, y_pred_xgb_proba)}
+        Probas: {y_pred_xgb_proba[y_pred_xgb_proba >= .05]}
         ''')
 
 def load_model():

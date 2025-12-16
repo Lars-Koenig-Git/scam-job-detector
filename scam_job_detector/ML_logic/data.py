@@ -48,6 +48,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df[text_columns] = df[text_columns].fillna("").astype(str)
 
     df["job_description"] = df[text_columns].agg(" ".join, axis=1).str.strip()
+
     # Clean text data
     df['job_description'] = df['job_description'].fillna('missing value')
 
@@ -57,15 +58,15 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df['country'] = df['location'].astype(str).apply(lambda x: x.split(',')[0])
 
     # reducing number of categories for the most important variables as shown by feature permutation.
-    top5_idx = df["industry"].value_counts().head(10).index
-    df["industry"] = df["industry"].where(df["industry"].isin(top5_idx), "Other")
+    top10_idx = df["industry"].value_counts().head(10).index
+    df["industry"] = df["industry"].where(df["industry"].isin(top10_idx), "Other")
 
-    top5_idx = df["country"].value_counts().head(10).index
-    df["country"] = df["country"].where(df["country"].isin(top5_idx), "Other")
+    top10_idx = df["country"].value_counts().head(10).index
+    df["country"] = df["country"].where(df["country"].isin(top10_idx), "Other")
     
 
-    top5_idx = df["function"].value_counts().head(10).index
-    df["function"] = df["function"].where(df["function"].isin(top5_idx), "Other")
+    top10_idx = df["function"].value_counts().head(10).index
+    df["function"] = df["function"].where(df["function"].isin(top10_idx), "Other")
     
 
     # Drop irrelevant columns
