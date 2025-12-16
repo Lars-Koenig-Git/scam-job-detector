@@ -8,8 +8,7 @@ import os
 from scam_job_detector.ML_logic.data import clean_data
 from scam_job_detector.ML_logic.preprocessor import test_preprocessor
 from scam_job_detector.ML_logic.model import load_model
-from sklearn.model_selection import GridSearchCV
-from sklearn.linear_model import LogisticRegression
+
 
 
 app = FastAPI()
@@ -87,11 +86,11 @@ def predict(
 
     # Generate prediction based up processed features.
     prediction = model.predict(X_new_preprocessed)[0]
-    prediction_proba = model.predict_proba(X_new_preprocessed)[0]
+    prediction_proba = model.predict_proba(X_new_preprocessed)[0][1].tolist()
 
     return {
         "fraudulent": float(prediction),
-        "prob_fraudulent": float(prediction_proba),
+        "prob_fraudulent": float(round(prediction_proba, 4)),
     }
 
 
