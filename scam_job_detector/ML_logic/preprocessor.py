@@ -1,3 +1,10 @@
+"""Preprocessing utilities for the scam-job detector.
+
+Builds ColumnTransformer pipelines for categorical, binary and text features,
+provides convenience functions to fit/save a preprocessor and to load/apply it
+to new data. Saved artifact path: preprocessor.dill.
+"""
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -18,7 +25,6 @@ import dill
 categorical_columns = [
     'country',
     'industry',
-#    'function',
     'employment_type'
 ]
 
@@ -30,7 +36,20 @@ text_columns = ['job_description']
 
 # preprocessor pipeline
 def preprocessing_pipeline(text=True, text_only=False) -> ColumnTransformer:
+    """Build the preprocessing ColumnTransformer.
 
+    Args:
+    text (bool): include text processing (TfidfVectorizer) when True.
+    text_only (bool): if True, return a transformer that processes only text columns.
+    Returns:
+
+    ColumnTransformer: an unfitted transformer combining:
+
+    - categorical: SimpleImputer(strategy='constant', fill_value='Missing') + OneHotEncoder(handle_unknown='ignore')
+    - binary: SimpleImputer(strategy='most_frequent') + OneHotEncoder(handle_unknown='ignore')
+    - text: TfidfVectorizer with ngram_range=(1,2), min_df=2, max_df=0.9
+
+    """
     cat_transformer = make_pipeline(
         SimpleImputer(strategy='constant', fill_value='Missing'),
         OneHotEncoder(handle_unknown='ignore')
@@ -66,6 +85,18 @@ def preprocessing_pipeline(text=True, text_only=False) -> ColumnTransformer:
 
 # train preprocessor pipeline
 def train_preprocessor(X_train: pd.DataFrame, text=True, text_only = False) -> np.ndarray:
+    """Fit and persist the preprocessor on training data.
+
+    Args:
+
+    X_train (pd.DataFrame): feature DataFrame containing columns listed at module-level.
+    text (bool), text_only (bool): forwarded to preprocessing_pipeline.
+    Returns:
+
+    Notes:
+    Saves fitted preprocessor to preprocessor.dill using dill.
+    """
+
     preprocessor = preprocessing_pipeline(text=text, text_only=text_only)
     X_train_fitted = preprocessor.fit(X_train)
     X_train_preprocessed = X_train_fitted.transform(X_train)
@@ -81,6 +112,13 @@ def train_preprocessor(X_train: pd.DataFrame, text=True, text_only = False) -> n
 
 # function to load and run the fitted preprocessor on new or test data
 def test_preprocessor(X_test: pd.DataFrame) -> np.ndarray:
+    """Load saved preprocessor and transform input data.
+
+    Args:
+
+    X_test (pd.DataFrame): features to transform.
+    Returns: np.ndarray or sparse matrix: transformed features.
+    """
     model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname((__file__)))) , 'models', 'preprocessor.dill')
 
     with open(model_path, "rb") as file:

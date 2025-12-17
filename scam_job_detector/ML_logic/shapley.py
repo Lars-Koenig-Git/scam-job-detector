@@ -2,10 +2,9 @@ from scam_job_detector.ML_logic.model import load_model, load_preprocessor
 import shap
 import os
 import pandas as pd
-from wordcloud import WordCloud
 
     # ====================================================== #
-    # 3️⃣ SHAPLEY VALUES COMPUTATION
+    # SHAPLEY VALUES COMPUTATION
     # ====================================================== #
 
 def shapley(X_new_preprocessed):
@@ -28,7 +27,7 @@ def shapley(X_new_preprocessed):
     background_df = (
         df
         .drop(columns=["fraudulent"], errors="ignore")
-        .sample(20, random_state=42)
+        .sample(20)
     )
 
     X_background = preprocessor.transform(background_df)
@@ -64,24 +63,24 @@ def shapley(X_new_preprocessed):
     # extract text from features names
     def extract_word(feature):
         return feature.split("tfidfvectorizer__")[-1]
-
+    def extract_country(feature):
+        return feature.split("country_")[-1]
+    def extract_logo(feature):
+        return feature.split("has_company_logo_")[-1]
+    
     # Apply function to text_df
     text_df["word"] = text_df["feature"].apply(extract_word)
+    binary_df["feature"] = binary_df["feature"].apply(extract_logo)
+    country_df["feature"] = country_df["feature"].apply(extract_country)
+
+    binary_mask = shap_df.feature.str.contains("has_company_logo")
+    country_mask = shap_df.feature.str.contains("country_")
 
     shap_features_text = text_df["word"].tolist()
-    shap_text_list =text_df["shap_value"].tolist()
+    shap_text_values =text_df["shap_value"].tolist()
     shap_features_binary = binary_df["feature"].tolist()
     shap_values_binary= binary_df["shap_value"].tolist()
     shap_features_country = country_df["feature"].tolist()
     shap_values_country= country_df["shap_value"].tolist()
 
-    return shap_features_text, shap_text_list, shap_features_binary ,shap_values_binary, shap_features_country, shap_values_country
-
-# def generate_wordcloud(shap_features, shap_values_list):
-#     # Create a dictionary of feature names and their corresponding SHAP values
-#     shap_dict = dict(zip(shap_features, shap_values_list))
-
-#     # Generate word cloud
-#     wc = WordCloud(width=800, height=400, background_color="white").generate_from_frequencies(shap_dict)
-
-#     return wc
+    return shap_features_text, shap_text_values, shap_features_binary ,shap_values_binary, shap_features_country, shap_values_country

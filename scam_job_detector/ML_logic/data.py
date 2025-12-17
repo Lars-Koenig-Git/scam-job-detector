@@ -18,7 +18,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
         # remove punctuation
         for punctuation in string.punctuation:
-            sentence = sentence.replace(punctuation, '')
+            sentence = sentence.replace(punctuation, ' ')
 
         # set to lowercase
         sentence = sentence.lower()
@@ -46,12 +46,10 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
             'benefits'
     ]
     df[text_columns] = df[text_columns].fillna("").astype(str)
-
     df["job_description"] = df[text_columns].agg(" ".join, axis=1).str.strip()
 
     # Clean text data
     df['job_description'] = df['job_description'].fillna('missing value')
-
     df['job_description'] = df['job_description'].apply(preprocessing)
 
     # extracting country ID
@@ -71,9 +69,9 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     # Drop irrelevant columns
     df.drop(columns=['department',
-                     'has_questions',
+                    'has_questions',
                      'required_experience',
-                     'salary_range',
+                    'salary_range',
                      'telecommuting',
                      'required_education',
                      'location',
