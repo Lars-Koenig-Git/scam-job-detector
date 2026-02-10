@@ -30,7 +30,7 @@ RUN [ "python3", "-c", "import nltk; nltk.download('wordnet')" ]
 # 5. Launch API using uvicorn
 # - host 0.0.0.0 allows receiving external requests
 # - port is defined by environment variable $PORT
-# - app path assumes: taxifare/main.py → app = FastAPI()
+# - app path assumes: scam_job_detector/main.py → app = FastAPI()
 # -----------------------------
 
 CMD uvicorn api.fast:app --host 0.0.0.0 --port $PORT
